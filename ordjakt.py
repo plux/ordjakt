@@ -57,5 +57,5 @@ def is_palindrome(word):
     return word == word[::-1]
 
 if __name__ == "__main__":
-    args = docopt.docopt(__doc__, version='Ordjakt 1.0.0')
+    args = docopt.docopt(__doc__, version='Ordjakt 1.1.0')
     main(args)
