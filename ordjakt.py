@@ -12,6 +12,7 @@ Options:
   -d --dict=<filename>  Specify dictionary file to use. [default: ./dicts/sv_SE.dic]
   -n --count=<n>        Only show n number of matches.
   -l --length=<length>  Max word length.
+  -p --palindrome       Find palindromes.
 
 """
 import sys
@@ -46,9 +47,14 @@ def make_pattern(letters):
 def custom_filter_matches(args, matches):
     if args['--length']:
         matches = filter(lambda m: len(m) <= int(args['--length']), matches)
+    if args['--palindrome']:
+        matches = filter(is_palindrome, matches)
     if args['--count']:
         matches = matches[-int(args['--count']):]
     return matches
+
+def is_palindrome(word):
+    return word == word[::-1]
 
 if __name__ == "__main__":
     args = docopt.docopt(__doc__, version='Ordjakt 1.0.0')
