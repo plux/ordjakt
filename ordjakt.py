@@ -21,12 +21,10 @@ import docopt
 
 def main(args):
     words = read_words(args['--dict'])
-    max_length = int(args['--length'] or sys.maxint)
-    words = filter(lambda word: len(word) <= max_length, words)
     pattern = make_pattern(args['<letters>'] or '.')
-    matches = filter(lambda word: pattern.match(word), words)
-    count = int(args['--count'] or 0)
-    print('\n'.join(matches[-count:]).encode('utf-8'))
+    matches = filter(pattern.match, words)
+    matches = custom_filter_matches(args, matches)
+    print('\n'.join(matches).encode('utf-8'))
 
 def read_words(filename):
     with open(filename, 'rb') as f:
@@ -44,6 +42,13 @@ def by_length(a, b):
 def make_pattern(letters):
     letters = letters.decode('utf-8')
     return re.compile('^' + ''.join([c + ".*" for c in letters]))
+
+def custom_filter_matches(args, matches):
+    if args['--length']:
+        matches = filter(lambda m: len(m) <= int(args['--length']), matches)
+    if args['--count']:
+        matches = matches[-int(args['--count']):]
+    return matches
 
 if __name__ == "__main__":
     args = docopt.docopt(__doc__, version='Ordjakt 1.0.0')
